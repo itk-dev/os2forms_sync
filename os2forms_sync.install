@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Install file form os2forms_sync.
+ */
+
+use Drupal\os2forms_sync\Helper\ImportHelper;
+
+/**
+ * Implements hook_schema().
+ *
+ * @see ImportHelper::schema()
+ *
+ * @phpstan-return array<string, mixed>
+ */
+function os2forms_sync_schema(): array {
+  return \Drupal::service(ImportHelper::class)->schema();
+}

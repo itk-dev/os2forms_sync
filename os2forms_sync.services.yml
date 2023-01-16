@@ -1,0 +1,12 @@
+services:
+  Drupal\os2forms_sync\Helper\WebformHelper:
+    arguments:
+      - '@entity_type.manager'
+      - '@Drupal\os2forms_sync\Helper\ImportHelper'
+
+  Drupal\os2forms_sync\Helper\ImportHelper:
+    arguments:
+      - '@entity_type.manager'
+      - '@http_client'
+      - '@database'
+      - '@datetime.time'

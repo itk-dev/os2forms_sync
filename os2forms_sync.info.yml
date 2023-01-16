@@ -1,0 +1,9 @@
+name: OS2Forms sync
+description: OS2Forms sync
+package: OS2Forms
+
+type: module
+core_version_requirement: ^9
+
+dependencies:
+  - drupal:os2forms

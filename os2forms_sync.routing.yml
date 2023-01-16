@@ -1,0 +1,24 @@
+os2forms_sync.webform.index:
+  path: '/os2forms/sync/webform'
+  defaults:
+    _controller: '\Drupal\os2forms_sync\Controller\WebformController::index'
+  requirements:
+    _permission: 'access content'
+
+os2forms_sync.webform.show:
+  path: '/os2forms/sync/webform/{webform}'
+  defaults:
+    _controller: '\Drupal\os2forms_sync\Controller\WebformController::show'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      webform:
+        type: entity:webform
+
+os2forms_sync.webform.imported:
+  path: '/os2forms/sync/webform/imported'
+  defaults:
+    _controller: '\Drupal\os2forms_sync\Controller\WebformController::imported'
+  requirements:
+    _permission: 'access webform overview'
