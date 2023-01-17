@@ -1,4 +1,8 @@
 services:
+  Drupal\os2forms_sync\Helper\Settings:
+    arguments:
+      - '@state'
+
   Drupal\os2forms_sync\Helper\WebformHelper:
     arguments:
       - '@entity_type.manager'
@@ -10,3 +14,11 @@ services:
       - '@http_client'
       - '@database'
       - '@datetime.time'
+      - '@Drupal\os2forms_sync\Helper\Settings'
+      - '@cache.default'
+
+  Drupal\os2forms_sync\Helper\JsonAPISerializer:
+
+  Drupal\os2forms_sync\Twig\TwigExtension:
+    tags:
+      - { name: twig.extension }

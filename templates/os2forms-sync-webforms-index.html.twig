@@ -1,0 +1,32 @@
+<section class="os2forms-sync-webforms">
+  <h1>{{ 'Webforms'|t }}</h1>
+  {% if webforms %}
+    <form method="post">
+    {% for webform in webforms %}
+      <div class="os2forms-sync-webform">
+        <h2>{{ webform.attributes.title|raw }}</h2>
+        <div class="description">
+          {{ webform.attributes.description|raw }}
+        </div>
+        <div class="category">
+          {{ webform.attributes.category }}
+        </div>
+
+        <details>
+          <summary>{{ 'Elements'|t }}</summary>
+
+          <pre>{{ webform.attributes.elements|yaml_encode }}</pre>
+        </details>
+
+        <div class="source">
+          <a href="{{ webform.links.self }}">{{ webform.links.self }}</a>
+        </div>
+
+        <a class="button" href="{{ path('os2forms_sync.webform.import', {url: webform.links.self}) }}">{{ 'Import webform'|t }}</a>
+      </div>
+    {% endfor %}
+    </form>
+  {% else %}
+    <div class="alert alert-warning">{{ 'No webforms'|t }}</div>
+  {% endif %}
+</section>

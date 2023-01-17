@@ -7,6 +7,12 @@ composer require os2forms/os2forms_sync
 drush pm:enable os2forms_sync
 ```
 
+Edit settings on `/admin/os2forms_sync/settings`.
+
+## API
+
+JSON:API
+
 ## Usage
 
 Publish a webform by checking “Publish” under webform setting » Third party

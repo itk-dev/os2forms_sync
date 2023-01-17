@@ -1,14 +1,36 @@
+os2forms_sync.admin.settings:
+  path: '/admin/os2forms_sync/settings'
+  defaults:
+    _form: '\Drupal\os2forms_sync\Form\SettingsForm'
+    _title: 'Sync settings'
+  requirements:
+    _permission: 'administer site configuration'
+
 os2forms_sync.webform.index:
-  path: '/os2forms/sync/webform'
+  path: '/admin/os2forms/sync/webform'
   defaults:
     _controller: '\Drupal\os2forms_sync\Controller\WebformController::index'
   requirements:
+    _permission: 'access webform overview'
+
+os2forms_sync.webform.import:
+  path: '/admin/os2forms/sync/webform/import'
+  defaults:
+    _controller: '\Drupal\os2forms_sync\Controller\WebformController::import'
+  requirements:
+    _permission: 'access webform overview'
+
+os2forms_sync.jsonapi.webform.index:
+  path: '/os2forms/sync/jsonapi/webform'
+  defaults:
+    _controller: '\Drupal\os2forms_sync\Controller\JsonAPI\WebformController::index'
+  requirements:
     _permission: 'access content'
 
-os2forms_sync.webform.show:
-  path: '/os2forms/sync/webform/{webform}'
+os2forms_sync.jsonapi.webform.show:
+  path: '/os2forms/sync/jsonapi/webform/{webform}'
   defaults:
-    _controller: '\Drupal\os2forms_sync\Controller\WebformController::show'
+    _controller: '\Drupal\os2forms_sync\Controller\JsonAPI\WebformController::show'
   requirements:
     _permission: 'access content'
   options:
@@ -16,9 +38,16 @@ os2forms_sync.webform.show:
       webform:
         type: entity:webform
 
-os2forms_sync.webform.imported:
-  path: '/os2forms/sync/webform/imported'
+os2forms_sync.jsonapi.webform.imported:
+  path: '/os2forms/sync/jsonapi/webform/imported'
   defaults:
-    _controller: '\Drupal\os2forms_sync\Controller\WebformController::imported'
+    _controller: '\Drupal\os2forms_sync\Controller\JsonAPI\WebformController::imported'
+  requirements:
+    _permission: 'access webform overview'
+
+os2forms_sync.jsonapi.webform.available:
+  path: '/os2forms/sync/jsonapi/webform/available'
+  defaults:
+    _controller: '\Drupal\os2forms_sync\Controller\JsonAPI\WebformController::available'
   requirements:
     _permission: 'access webform overview'

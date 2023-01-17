@@ -29,3 +29,25 @@ function os2forms_sync_webform_third_party_settings_form_alter(array &$form, For
 function os2forms_sync_webform_delete(WebformInterface $webform): void {
   \Drupal::service(ImportHelper::class)->deleteWebform($webform);
 }
+
+/**
+ * Implements hook_theme().
+ *
+ * @phpstan-param array<string, mixed> $existing
+ * @phpstan-return array<string, mixed>
+ */
+function os2forms_sync_theme(array $existing, string $type, string $theme, string $path): array {
+  return [
+    'os2forms_sync_webforms_index' => [
+      'variables' => [
+        'webforms' => NULL,
+      ],
+    ],
+    'os2forms_sync_webform_import' => [
+      'variables' => [
+        'url' => NULL,
+        'webform' => NULL,
+      ],
+    ],
+  ];
+}

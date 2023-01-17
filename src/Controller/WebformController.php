@@ -3,24 +3,23 @@
 namespace Drupal\os2forms_sync\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Http\RequestStack;
+use Drupal\Core\Routing\TrustedRedirectResponse;
+use Drupal\Core\Url;
 use Drupal\os2forms_sync\Helper\ImportHelper;
-use Drupal\os2forms_sync\Helper\WebformHelper;
-use Drupal\webform\WebformInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Webform controller.
  */
 final class WebformController extends ControllerBase {
   /**
-   * The webform helper.
+   * The request stack.
    *
-   * @var \Drupal\os2forms_sync\Helper\WebformHelper
+   * @var \Drupal\Core\Http\RequestStack
    */
-  private WebformHelper $webformHelper;
+  private RequestStack $requestStack;
 
   /**
    * The import helper.
@@ -32,8 +31,8 @@ final class WebformController extends ControllerBase {
   /**
    * Constructor.
    */
-  public function __construct(WebformHelper $helper, ImportHelper $importHelper) {
-    $this->webformHelper = $helper;
+  public function __construct(RequestStack $requestStack, ImportHelper $importHelper) {
+    $this->requestStack = $requestStack;
     $this->importHelper = $importHelper;
   }
 
@@ -42,39 +41,64 @@ final class WebformController extends ControllerBase {
    */
   public static function create(ContainerInterface $container): self {
     return new static(
-      $container->get(WebformHelper::class),
+      $container->get('request_stack'),
       $container->get(ImportHelper::class)
     );
   }
 
   /**
    * Index action.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response|array
+   *   The response.
+   *
+   * @phpstan-return array<string, mixed>
    */
-  public function index(): Response {
-    $webforms = $this->webformHelper->loadPublishedWebforms();
-    $data = array_map([$this->webformHelper, 'webformToArray'], $webforms);
+  public function index(): array {
+    $webforms = $this->importHelper->getAvailableWebforms();
 
-    return new JsonResponse($data);
+    return [
+      '#theme' => 'os2forms_sync_webforms_index',
+      '#webforms' => $webforms,
+    ];
   }
 
   /**
-   * Show action.
+   * Import action.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response|array
+   *   The response.
+   *
+   * @phpstan-return \Symfony\Component\HttpFoundation\Response|array<string, mixed>
    */
-  public function show(WebformInterface $webform): Response {
-    if (!$this->webformHelper->webformIsPublished($webform)) {
-      throw new AccessDeniedHttpException();
+  public function import() {
+    $request = $this->requestStack->getCurrentRequest();
+    $url = $request->get('url');
+    if (empty($url)) {
+      throw new BadRequestHttpException();
     }
 
-    return new JsonResponse($this->webformHelper->webformToArray($webform));
-  }
+    if ('POST' === $request->getMethod()) {
+      try {
+        $webform = $this->importHelper->import($url);
+        $this->messenger()->addStatus($this->t('Webform @title imported.', ['@title' => $webform->get('title')]));
 
-  /**
-   * Imported action.
-   */
-  public function imported(): Response {
-    $data = $this->importHelper->getWebformImportInformation();
+        return new TrustedRedirectResponse(Url::fromRoute('entity.webform.edit_form', ['webform' => $webform->id()])->toString(TRUE)->getGeneratedUrl());
+      }
+      catch (\Exception $exception) {
+        $this->messenger()->addError($exception->getMessage());
+      }
 
-    return new JsonResponse(['data' => $data]);
+      return new TrustedRedirectResponse(Url::fromRoute('os2forms_sync.webform.import', ['url' => $url])->toString(TRUE)->getGeneratedUrl());
+    }
+
+    $webform = $this->importHelper->getAvailableWebform($url);
+
+    return [
+      '#theme' => 'os2forms_sync_webform_import',
+      '#url' => $url,
+      '#webform' => $webform,
+    ];
   }
 
 }

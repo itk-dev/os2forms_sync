@@ -7,3 +7,5 @@ core_version_requirement: ^9
 
 dependencies:
   - drupal:os2forms
+
+configure: os2forms_sync.admin.settings
