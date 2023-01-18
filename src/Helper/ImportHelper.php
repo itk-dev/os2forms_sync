@@ -338,6 +338,7 @@ final class ImportHelper {
    * Fetch available published webforms.
    *
    * @param string[]|array $sources
+   *   The sources.
    *
    * @phpstan-return array<mixed>
    */

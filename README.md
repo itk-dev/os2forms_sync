@@ -18,9 +18,12 @@ JSON:API
 Publish a webform by checking “Publish” under webform setting » Third party
 settings » OS2Forms » OS2Forms sync
 
-All published webforms are listed on `/os2forms/sync/webform`.
+All published webforms are listed on `/admin/os2forms/sync/webform` (API data on
+`/os2forms/sync/jsonapi/webform`).
 
-Imported webforms are listed on `/os2forms/sync/webform/imported`.
+Webforms available for import are listed on `/os2forms/sync/jsonapi/webform/available`.
+
+Imported webforms are listed on `/os2forms/sync/jsonapi/webform/imported`.
 
 ## Drush commands
 
