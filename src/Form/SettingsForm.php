@@ -66,6 +66,19 @@ final class SettingsForm extends FormBase {
       ]),
     ];
 
+    $form['sources_ttl'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Sources Ttl'),
+      '#options' => [
+        0 => $this->t('None'),
+        60 * 60 => $this->t('1 hour'),
+        24 * 60 * 60 => $this->t('1 day'),
+        7 * 24 * 60 * 60 => $this->t('7 days'),
+      ],
+      '#default_value' => $this->settings->getSourcesTtl(),
+      '#description' => $this->t('Cache content from source for this long.'),
+    ];
+
     $form['actions']['#type'] = 'actions';
 
     $form['actions']['submit'] = [
@@ -85,6 +98,7 @@ final class SettingsForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $formState) {
     try {
       $settings['sources'] = $this->getSources($formState);
+      $settings['sources_ttl'] = (int) $formState->getValue('sources_ttl');
       $this->settings->setSettings($settings);
       $this->messenger()->addStatus($this->t('Settings saved'));
     }

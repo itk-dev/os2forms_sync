@@ -32,7 +32,7 @@ final class Settings {
   }
 
   /**
-   * Get Sources.
+   * Get sources.
    *
    * @return string[]
    *   The sources.
@@ -40,6 +40,17 @@ final class Settings {
   public function getSources(): array {
     $value = $this->get('sources');
     return is_array($value) ? $value : [];
+  }
+
+  /**
+   * Get sources time to live.
+   *
+   * @return int
+   *   The ttl.
+   */
+  public function getSourcesTtl(): int {
+    $value = $this->get('sources_ttl');
+    return (int) (is_numeric($value) ? $value : 0);
   }
 
   /**
@@ -84,8 +95,10 @@ final class Settings {
     return (new OptionsResolver())
       ->setDefaults([
         'sources' => [],
+        'sources_ttl' => 0,
       ])
-      ->setAllowedTypes('sources', 'string[]');
+      ->setAllowedTypes('sources', 'string[]')
+      ->setAllowedTypes('sources_ttl', 'int');
   }
 
 }

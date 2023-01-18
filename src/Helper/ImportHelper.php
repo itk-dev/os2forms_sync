@@ -5,7 +5,6 @@ namespace Drupal\os2forms_sync\Helper;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Serialization\Yaml;
@@ -312,16 +311,37 @@ final class ImportHelper {
    */
   public function getAvailableWebforms(): array {
     $sources = array_unique($this->settings->getSources());
+    $ttl = $this->settings->getSourcesTtl();
     $cacheKey = preg_replace(
       '#[{}()/\\\\@:]+#',
       '_',
-      __METHOD__ . '|' . sha1(json_encode($sources))
+      __METHOD__ . '|' . sha1(json_encode([
+        'sources' => $sources,
+        'source_ttl' => $ttl,
+      ]))
     );
 
-    if ($hit = $this->cache->get($cacheKey)) {
+    if ($ttl > 0 && $hit = $this->cache->get($cacheKey)) {
       return $hit->data;
     }
 
+    $webforms = $this->fetchAvailableWebforms($sources);
+
+    if ($ttl > 0) {
+      $this->cache->set($cacheKey, $webforms, time() + $ttl);
+    }
+
+    return $webforms;
+  }
+
+  /**
+   * Fetch available published webforms.
+   *
+   * @param string[]|array $sources
+   *
+   * @phpstan-return array<mixed>
+   */
+  public function fetchAvailableWebforms(array $sources): array {
     $webforms = [];
     foreach ($sources as $source) {
       $json = @json_decode(file_get_contents($source), TRUE) ?: [];
@@ -330,10 +350,7 @@ final class ImportHelper {
       }
     }
 
-    $webforms = array_merge(...$webforms);
-    $this->cache->set($cacheKey, $webforms, (new DrupalDateTime('+1 hour'))->getTimestamp());
-
-    return $webforms;
+    return array_merge(...$webforms);
   }
 
   /**
