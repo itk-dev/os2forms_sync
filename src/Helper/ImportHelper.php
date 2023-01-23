@@ -119,6 +119,12 @@ final class ImportHelper {
       $webform->set($name, $value);
     }
 
+    $webform
+      ->set('revision', TRUE)
+      ->set('revision_log_message', [
+        ['value' => $this->t('Updated from <a href=":url">:url</a>', [':url' => $url])],
+      ]);
+
     $isNewWebform = $webform->isNew();
     $webform->save();
 
