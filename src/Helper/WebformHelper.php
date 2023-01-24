@@ -158,9 +158,9 @@ final class WebformHelper {
 
       $form['third_party_settings']['os2forms']['os2forms_sync']['update_info'] = [
         'message' => [
-          '#markup' => $this->t('Webform updated from <a href=":url">:url</a> at @imported_at.', [
-            ':url' => $info['source_url'],
-            '@imported_at' => DrupalDateTime::createFromTimestamp($info['updated'])->format(DrupalDateTime::FORMAT),
+          '#markup' => $this->t('Webform updated from <a href=":url">:url</a> at @updated_at.', [
+            ':url' => $info->sourceUrl,
+            '@updated_at' => $info->updatedAt->format(DrupalDateTime::FORMAT),
           ]),
         ],
 
