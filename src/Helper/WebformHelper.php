@@ -6,6 +6,7 @@ use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Http\RequestStack;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
@@ -33,14 +34,23 @@ final class WebformHelper {
   private ImportHelper $importHelper;
 
   /**
+   * The request stack.
+   *
+   * @var \Drupal\Core\Http\RequestStack
+   */
+  private RequestStack $requestStack;
+
+  /**
    * The constructor.
    */
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
-    ImportHelper $importHelper
+    ImportHelper $importHelper,
+    RequestStack $requestStack
   ) {
     $this->webformEntityStorage = $entityTypeManager->getStorage('webform');
     $this->importHelper = $importHelper;
+    $this->requestStack = $requestStack;
   }
 
   /**
@@ -142,6 +152,15 @@ final class WebformHelper {
     ];
 
     if ($info = $this->importHelper->loadImportedWebform($webform)) {
+      $form['third_party_settings']['os2forms']['os2forms_sync']['message'] = [
+        '#prefix' => '<div>',
+        '#suffix' => '</div>',
+        '#markup' => $this->t('Webform updated from <a href=":url">:url</a> at @updated_at.', [
+          ':url' => $info->sourceUrl,
+          '@updated_at' => $info->updatedAt->format(DrupalDateTime::FORMAT),
+        ]),
+      ];
+
       $form['third_party_settings']['os2forms']['os2forms_sync']['update_interval'] = [
         '#type' => 'select',
         '#title' => $this->t('Update'),
@@ -156,20 +175,19 @@ final class WebformHelper {
         '#default_value' => (bool) ($defaultValues['update_interval'] ?? 0),
       ];
 
-      $form['third_party_settings']['os2forms']['os2forms_sync']['update_info'] = [
-        'message' => [
-          '#markup' => $this->t('Webform updated from <a href=":url">:url</a> at @updated_at.', [
-            ':url' => $info->sourceUrl,
-            '@updated_at' => $info->updatedAt->format(DrupalDateTime::FORMAT),
-          ]),
-        ],
-
-        'update_now' => [
-          '#type' => 'button',
-          '#value' => $this->t('Update webform now'),
+      $form['third_party_settings']['os2forms']['os2forms_sync']['update_now'] = [
+        '#prefix' => '<div>',
+        '#suffix' => '</div>',
+        '#type' => 'button',
+        '#value' => $this->t('Update webform now'),
+        '#attributes' => [
+          'formmethod' => 'post',
+          'formaction' => Url::fromRoute('os2forms_sync.webform.import', [
+            'url' => $info->sourceUrl,
+            'referer' => Url::fromUri($this->requestStack->getCurrentRequest()->getUri(), ['fragment' => 'edit-third-party-settings-os2forms-os2forms-sync'])->toString(TRUE)->getGeneratedUrl(),
+          ])->toString(TRUE)->getGeneratedUrl(),
         ],
       ];
-
     }
   }
 

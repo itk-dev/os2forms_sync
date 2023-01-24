@@ -78,18 +78,19 @@ final class WebformController extends ControllerBase {
       throw new BadRequestHttpException();
     }
 
+    $referrer = $request->query->get('referer');
     if ('POST' === $request->getMethod()) {
       try {
         $webform = $this->importHelper->import($url);
         $this->messenger()->addStatus($this->t('Webform @title imported.', ['@title' => $webform->get('title')]));
 
-        return new TrustedRedirectResponse(Url::fromRoute('entity.webform.edit_form', ['webform' => $webform->id()])->toString(TRUE)->getGeneratedUrl());
+        return new TrustedRedirectResponse($referrer ?? Url::fromRoute('entity.webform.edit_form', ['webform' => $webform->id()])->toString(TRUE)->getGeneratedUrl());
       }
       catch (\Exception $exception) {
         $this->messenger()->addError($exception->getMessage());
       }
 
-      return new TrustedRedirectResponse(Url::fromRoute('os2forms_sync.webform.import', ['url' => $url])->toString(TRUE)->getGeneratedUrl());
+      return new TrustedRedirectResponse($referrer ?? Url::fromRoute('os2forms_sync.webform.import', ['url' => $url])->toString(TRUE)->getGeneratedUrl());
     }
 
     $webform = $this->importHelper->getAvailableWebform($url);
