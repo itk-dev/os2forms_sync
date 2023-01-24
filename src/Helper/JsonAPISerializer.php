@@ -88,6 +88,8 @@ final class JsonAPISerializer {
       ARRAY_FILTER_USE_KEY
     );
 
+    $attributes = array_map('html_entity_decode', $attributes);
+
     if (isset($attributes['elements'])) {
       try {
         $attributes['elements'] = Yaml::decode($attributes['elements']);
