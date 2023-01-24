@@ -1,0 +1,4 @@
+webform-index:
+  version: 1.x
+  js:
+    assets/js/webform-index.js: {}

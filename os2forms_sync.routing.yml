@@ -17,6 +17,7 @@ os2forms_sync.webform.import:
   path: '/admin/os2forms/sync/webform/import'
   defaults:
     _controller: '\Drupal\os2forms_sync\Controller\WebformController::import'
+  methods: [POST]
   requirements:
     _permission: 'access webform overview'
 

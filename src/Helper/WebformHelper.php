@@ -191,4 +191,21 @@ final class WebformHelper {
     }
   }
 
+  /**
+   * Implements hook_theme().
+   *
+   * @phpstan-param array<string, mixed> $existing
+   * @phpstan-return array<string, mixed>
+   */
+  public function theme(array $existing, string $type, string $theme, string $path): array {
+    return [
+      'os2forms_sync_webform_index' => [
+        'variables' => [
+          'webforms' => NULL,
+          'settings_url' => NULL,
+        ],
+      ],
+    ];
+  }
+
 }

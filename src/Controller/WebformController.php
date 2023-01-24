@@ -56,10 +56,15 @@ final class WebformController extends ControllerBase {
    */
   public function index(): array {
     $webforms = $this->importHelper->getAvailableWebforms();
+    $settingsUrl = Url::fromRoute('os2forms_sync.admin.settings');
+    if (!$settingsUrl->access($this->currentUser())) {
+      $settingsUrl = NULL;
+    }
 
     return [
-      '#theme' => 'os2forms_sync_webforms_index',
+      '#theme' => 'os2forms_sync_webform_index',
       '#webforms' => $webforms,
+      '#settings_url' => $settingsUrl,
     ];
   }
 
@@ -79,27 +84,18 @@ final class WebformController extends ControllerBase {
     }
 
     $referrer = $request->query->get('referer');
-    if ('POST' === $request->getMethod()) {
-      try {
-        $webform = $this->importHelper->import($url);
-        $this->messenger()->addStatus($this->t('Webform @title imported.', ['@title' => $webform->get('title')]));
 
-        return new TrustedRedirectResponse($referrer ?? Url::fromRoute('entity.webform.edit_form', ['webform' => $webform->id()])->toString(TRUE)->getGeneratedUrl());
-      }
-      catch (\Exception $exception) {
-        $this->messenger()->addError($exception->getMessage());
-      }
+    try {
+      $webform = $this->importHelper->import($url);
+      $this->messenger()->addStatus($this->t('Webform @title imported.', ['@title' => $webform->get('title')]));
 
-      return new TrustedRedirectResponse($referrer ?? Url::fromRoute('os2forms_sync.webform.import', ['url' => $url])->toString(TRUE)->getGeneratedUrl());
+      return new TrustedRedirectResponse($referrer ?? Url::fromRoute('entity.webform.edit_form', ['webform' => $webform->id()])->toString(TRUE)->getGeneratedUrl());
+    }
+    catch (\Exception $exception) {
+      $this->messenger()->addError($exception->getMessage());
     }
 
-    $webform = $this->importHelper->getAvailableWebform($url);
-
-    return [
-      '#theme' => 'os2forms_sync_webform_import',
-      '#url' => $url,
-      '#webform' => $webform,
-    ];
+    return new TrustedRedirectResponse($referrer ?? Url::fromRoute('os2forms_sync.webform.import', ['url' => $url])->toString(TRUE)->getGeneratedUrl());
   }
 
 }

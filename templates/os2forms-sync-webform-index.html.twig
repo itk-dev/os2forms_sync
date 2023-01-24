@@ -1,0 +1,42 @@
+{{ attach_library('os2forms_sync/webform-index') }}
+
+<section class="os2forms-sync-webform-index">
+  <h1>{{ 'Webforms'|t }}</h1>
+  {% if webforms %}
+    <div>
+      <input type="search" class="form-element form-autocomplete" placeholder="{{ 'Search …'|t }}" />
+    </div>
+    <form method="post">
+      {% for webform in webforms %}
+        <div class="os2forms-sync-webform">
+          <h2>{{ webform.attributes.title|raw }}</h2>
+          <div class="description">
+            {{ webform.attributes.description|raw }}
+          </div>
+          <div class="category">
+            {{ webform.attributes.category }}
+          </div>
+
+          <details>
+            <summary>{{ 'Elements'|t }}</summary>
+
+            <pre>{{ webform.attributes.elements|yaml_encode }}</pre>
+          </details>
+
+          <div class="source">
+            <a href="{{ webform.links.self }}">{{ webform.links.self }}</a>
+          </div>
+
+          <button class="button" formaction="{{ path('os2forms_sync.webform.import', {url: webform.links.self}) }}">{{ 'Import webform'|t }}</button>
+        </div>
+      {% endfor %}
+    </form>
+  {% else %}
+    <div class="alert alert-warning">{{ 'No webforms'|t }}</div>
+  {% endif %}
+
+  {% if settings_url|default() %}
+    <hr>
+    <a href="{{ settings_url }}">{{ 'O2Forms sync settings'|t }}</a>
+  {% endif %}
+</section>
