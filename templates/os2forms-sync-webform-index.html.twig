@@ -1,36 +1,56 @@
 {{ attach_library('os2forms_sync/webform-index') }}
 
 <section class="os2forms-sync-webform-index">
-  <h1>{{ 'Webforms'|t }}</h1>
+  <h1>{{ 'Import webform'|t }}</h1>
   {% if webforms %}
     <div>
-      <input type="search" class="form-element form-autocomplete" placeholder="{{ 'Search …'|t }}" />
+      <input type="search" class="form-element form-autocomplete" placeholder="{{ 'Search title, description and category …'|t }}" />
     </div>
-    <form method="post">
-      {% for webform in webforms %}
-        <div class="os2forms-sync-webform">
-          <h2>{{ webform.attributes.title|raw }}</h2>
-          <div class="description">
+    {% for webform in webforms %}
+      <fieldset class="form-item os2forms-sync-webform">
+        <legend class="fieldset__legend">
+          <h2 class="fieldset__label">{{ webform.attributes.title|raw }}</h2>
+        </legend>
+
+        <div class="fieldset__wrapper">
+          <div class="description" data-indexed="{{webform.attributes.description|striptags}}">
             {{ webform.attributes.description|raw }}
           </div>
-          <div class="category">
-            {{ webform.attributes.category }}
+
+          <div>
+            <details class="form-wrapper claro-details">
+              <summary class="claro-details__summary">{{ 'Form display'|t }}</summary>
+
+              <div class="claro-details__wrapper details-wrapper">
+                {{ render_webform_elements(webform.attributes.elements)|raw }}
+              </div>
+            </details>
+
+            <details class="container-inline js-form-wrapper form-wrapper claro-details">
+              <summary class="claro-details__summary">{{ 'Elements'|t }}</summary>
+
+              <div class="claro-details__wrapper details-wrapper">
+                <pre>{{ webform.attributes.elements|yaml_encode }}</pre>
+              </div>
+            </details>
           </div>
 
-          <details>
-            <summary>{{ 'Elements'|t }}</summary>
+          <div class="form-item metadata">
+            <div class="category" data-indexed="{{webform.attributes.category|striptags}}">
+              <span class="label">{{ 'Category'|t }}</span> {{ webform.attributes.category }}
+            </div>
 
-            <pre>{{ webform.attributes.elements|yaml_encode }}</pre>
-          </details>
-
-          <div class="source">
-            <a href="{{ webform.links.self }}">{{ webform.links.self }}</a>
+            <div class="source" data-indexed="{{webform.links.self|striptags}}">
+              <a href="{{ webform.links.self }}">{{ webform.links.self }}</a>
+            </div>
           </div>
 
-          <button class="button" formaction="{{ path('os2forms_sync.webform.import', {url: webform.links.self}) }}">{{ 'Import webform'|t }}</button>
+          <form method="post">
+            <button class="button" formaction="{{ path('os2forms_sync.webform.import', {url: webform.links.self}) }}">{{ 'Import webform'|t }}</button>
+          </form>
         </div>
-      {% endfor %}
-    </form>
+      </fieldset>
+    {% endfor %}
   {% else %}
     <div class="alert alert-warning">{{ 'No webforms'|t }}</div>
   {% endif %}

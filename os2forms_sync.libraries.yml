@@ -1,4 +1,7 @@
 webform-index:
   version: 1.x
+  css:
+    theme:
+      assets/css/webform-index.css: {}
   js:
     assets/js/webform-index.js: {}

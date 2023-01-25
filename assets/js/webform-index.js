@@ -2,11 +2,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const webforms = document.querySelectorAll('.os2forms-sync-webform-index .os2forms-sync-webform')
   const searchInput = document.querySelector('.os2forms-sync-webform-index [type="search"]')
 
+  /**
+   * Combine values of all `data-indexed` attributes on descendants.
+   */
+  const index = (el) => {
+    return [...el.querySelectorAll('[data-indexed]')]
+      .map(e => e.dataset.indexed)
+      .join(' ')
+  }
+
   const liveSearch = () => {
-    console.log('liveSearch', searchInput.value)
-    const query = searchInput.value
+    const query = searchInput.value.toLowerCase()
     webforms.forEach(webform => {
-      webform.hidden = !webform.innerText.toLowerCase().includes(query)
+      if (!webform.indexed) {
+        webform.indexed = index(webform).toLowerCase()
+      }
+      webform.hidden = !webform.indexed.includes(query)
     })
   }
 
