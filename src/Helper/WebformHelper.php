@@ -85,46 +85,6 @@ final class WebformHelper {
   }
 
   /**
-   * Webform to array.
-   *
-   * @phpstan-return array<string, mixed>
-   */
-  public function webformToArray(WebformInterface $webform): array {
-    $data = array_filter(
-      $webform->toArray(),
-      static function ($key) {
-        return in_array($key, [
-          'id',
-          'uuid',
-          'title',
-          'description',
-          'category',
-          'elements',
-        ]);
-      },
-      ARRAY_FILTER_USE_KEY
-    );
-
-    if (isset($data['elements'])) {
-      try {
-        $data['elements'] = Yaml::decode($data['elements']);
-      }
-      catch (InvalidDataTypeException $invalidDataTypeException) {
-      }
-    }
-
-    $url = Url::fromRoute('os2forms_sync.jsonapi.webform.show', ['webform' => $webform->id()],
-      ['absolute' => TRUE])->toString();
-
-    return [
-      'data' => $data,
-      'links' => [
-        'self' => $url,
-      ],
-    ];
-  }
-
-  /**
    * Implements hook_webform_third_party_settings_form_alter().
    *
    * @phpstan-param array<string, mixed> $form
