@@ -16,3 +16,7 @@
   display: flex;
   justify-content: space-between;
 }
+
+.os2forms-sync-webform-index .settings {
+  margin-top: 2em;
+}

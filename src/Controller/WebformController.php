@@ -125,121 +125,138 @@ final class WebformController extends ControllerBase {
       ],
     ];
 
-    foreach ($webforms as $webform) {
-      $attributes = $webform['attributes'];
-      $form = $this->webformHelper->getSubmissionForm($attributes['elements']);
-      // Make sure that the form cannot be submitted (hopefully).
-      $form['#attributes']['onsubmit'] = 'return false';
-
-      $sourceUrl = $webform['links']['self'];
-      $importedWebform = $importedWebforms[$sourceUrl] ?? NULL;
-
-      $item = [
-        '#type' => 'fieldset',
-        '#title' => $attributes['title'] ?? 'xxx',
-        '#attributes' => ['class' => ['os2forms-sync-webform']],
-
-        'description' => [
-          '#type' => 'container',
-          '#attributes' => [
-            'class' => ['description'],
-            'data-indexed' => strip_tags($attributes['description']),
+    if (empty($webforms)) {
+      $elements['info'] = [
+        '#theme' => 'status_messages',
+        '#message_list' => [
+          'warning' => [
+            $this->t('No webforms found'),
           ],
-          '#markup' => Markup::create($attributes['description']),
         ],
+      ];
+    }
+    else {
+      foreach ($webforms as $webform) {
+        $attributes = $webform['attributes'];
+        $form = $this->webformHelper->getSubmissionForm($attributes['elements']);
+        // Make sure that the form cannot be submitted (hopefully).
+        $form['#attributes']['onsubmit'] = 'return false';
 
-        'form_display' => [
-          '#type' => 'details',
-          '#title' => $this->t('Form display'),
-          'form' => $form,
-        ],
+        $sourceUrl = $webform['links']['self'];
+        $importedWebform = $importedWebforms[$sourceUrl] ?? NULL;
 
-        'elements' => [
-          '#type' => 'details',
-          '#title' => $this->t('Elements'),
-          '#markup' => '<pre>' . Yaml::encode($attributes['elements']) . '</pre>',
-        ],
+        $item = [
+          '#type' => 'fieldset',
+          '#title' => $attributes['title'] ?? 'xxx',
+          '#attributes' => ['class' => ['os2forms-sync-webform']],
 
-        'metadata' => [
-          '#type' => 'container',
-          '#attributes' => [
-            'class' => ['metadata'],
-          ],
-
-          'category' => [
+          'description' => [
             '#type' => 'container',
             '#attributes' => [
-              'class' => ['category'],
-              'data-indexed' => strip_tags($attributes['category']),
+              'class' => ['description'],
+              'data-indexed' => strip_tags($attributes['description']),
             ],
-
-            'label' => [
-              '#type' => 'label',
-              '#title' => $this->t('Category'),
-              '#title_display' => 'above',
-            ],
-
-            'value' => [
-              '#type' => 'html_tag',
-              '#tag' => 'span',
-              '#attributes' => [
-                'class' => ['value'],
-              ],
-              '#value' => $attributes['category'],
-            ],
+            '#markup' => Markup::create($attributes['description']),
           ],
 
-          'source_url' => [
+          'form_display' => [
+            '#type' => 'details',
+            '#title' => $this->t('Form display'),
+            'form' => $form,
+          ],
+
+          'elements' => [
+            '#type' => 'details',
+            '#title' => $this->t('Elements'),
+            '#markup' => '<pre>' . Yaml::encode($attributes['elements']) . '</pre>',
+          ],
+
+          'metadata' => [
             '#type' => 'container',
-
-            'label' => [
-              '#type' => 'label',
-              '#title' => $this->t('Source url'),
-              '#title_display' => 'above',
+            '#attributes' => [
+              'class' => ['metadata'],
             ],
 
-            'value' => [
-              '#type' => 'html_tag',
-              '#tag' => 'span',
+            'category' => [
+              '#type' => 'container',
               '#attributes' => [
-                'class' => ['value'],
+                'class' => ['category'],
+                'data-indexed' => strip_tags($attributes['category']),
               ],
-              'link' => (new Link($sourceUrl, Url::fromUri($sourceUrl)))->toRenderable(),
+
+              'label' => [
+                '#type' => 'label',
+                '#title' => $this->t('Category'),
+                '#title_display' => 'above',
+              ],
+
+              'value' => [
+                '#type' => 'html_tag',
+                '#tag' => 'span',
+                '#attributes' => [
+                  'class' => ['value'],
+                ],
+                '#value' => $attributes['category'],
+              ],
+            ],
+
+            'source_url' => [
+              '#type' => 'container',
+
+              'label' => [
+                '#type' => 'label',
+                '#title' => $this->t('Source url'),
+                '#title_display' => 'above',
+              ],
+
+              'value' => [
+                '#type' => 'html_tag',
+                '#tag' => 'span',
+                '#attributes' => [
+                  'class' => ['value'],
+                ],
+                'link' => (new Link($sourceUrl, Url::fromUri($sourceUrl)))->toRenderable(),
+              ],
             ],
           ],
-        ],
-      ];
-
-      $item['import_form'] = [
-        '#type' => 'html_tag',
-        '#tag' => 'form',
-        '#attributes' => [
-          'method' => 'post',
-          'action' => Url::fromRoute('os2forms_sync.webform.import', ['url' => $sourceUrl])->toString(TRUE)->getGeneratedUrl(),
-        ],
-
-        'button' => [
-          '#type' => 'button',
-          '#value' => NULL === $importedWebform ? $this->t('Import webform') : $this->t('Update webform'),
-        ],
-      ];
-
-      if (NULL !== $importedWebform) {
-        $item['import_form']['info'] = [
-          '#markup' => $this->t('<a href=":webform_url">Webform</a> updated at @updated_at.', [
-            ':webform_url' => Url::fromRoute('entity.webform.edit_form', ['webform' => $importedWebform->webformId])->toString(TRUE)->getGeneratedUrl(),
-            '@updated_at' => $importedWebform->updatedAt->format(DrupalDateTime::FORMAT),
-          ]),
         ];
-      }
 
-      $elements[] = $item;
+        $item['import_form'] = [
+          '#type' => 'html_tag',
+          '#tag' => 'form',
+          '#attributes' => [
+            'method' => 'post',
+            'action' => Url::fromRoute('os2forms_sync.webform.import',
+              ['url' => $sourceUrl])->toString(TRUE)->getGeneratedUrl(),
+          ],
+
+          'button' => [
+            '#type' => 'button',
+            '#value' => NULL === $importedWebform ? $this->t('Import webform') : $this->t('Update webform'),
+          ],
+        ];
+
+        if (NULL !== $importedWebform) {
+          $item['import_form']['info'] = [
+            '#markup' => $this->t('<a href=":webform_url">Webform</a> updated at @updated_at.', [
+              ':webform_url' => Url::fromRoute('entity.webform.edit_form',
+                ['webform' => $importedWebform->webformId])->toString(TRUE)->getGeneratedUrl(),
+              '@updated_at' => $importedWebform->updatedAt->format(DrupalDateTime::FORMAT),
+            ]),
+          ];
+        }
+
+        $elements[] = $item;
+      }
     }
 
     $settingsUrl = Url::fromRoute('os2forms_sync.admin.settings');
     if ($settingsUrl->access($this->currentUser())) {
       $elements['settings'] = [
         '#type' => 'container',
+        '#attributes' => [
+          'class' => ['settings'],
+        ],
 
         'link' => (new Link($this->t('O2Forms sync settings'), $settingsUrl))->toRenderable(),
       ];
