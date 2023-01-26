@@ -214,7 +214,7 @@ final class ImportHelper {
   }
 
   /**
-   * Load all imported webforms.
+   * Load all imported webforms keyed by sourceUrl.
    *
    * @return \Drupal\os2forms_sync\Entity\ImportedWebform[]|array
    *   The imported webforms.
@@ -227,7 +227,8 @@ final class ImportHelper {
       $this->database
         ->select(self::TABLE_NAME, 't')
         ->fields('t')
-        ->execute()->fetchAll()
+        ->execute()
+        ->fetchAllAssoc('source_url')
     );
   }
 

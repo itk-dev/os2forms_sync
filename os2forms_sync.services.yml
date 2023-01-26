@@ -19,9 +19,3 @@ services:
       - '@cache.default'
 
   Drupal\os2forms_sync\Helper\JsonAPISerializer:
-
-  Drupal\os2forms_sync\Twig\TwigExtension:
-    arguments:
-      - '@renderer'
-    tags:
-      - { name: twig.extension }

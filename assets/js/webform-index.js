@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const webforms = document.querySelectorAll('.os2forms-sync-webform-index .os2forms-sync-webform')
   const searchInput = document.querySelector('.os2forms-sync-webform-index [type="search"]')
 
+  if (!(webforms && searchInput)) {
+    return
+  }
+
   /**
    * Combine values of all `data-indexed` attributes on descendants.
    */

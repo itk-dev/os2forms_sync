@@ -3,6 +3,7 @@
 namespace Drupal\os2forms_sync\Helper;
 
 use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
+use Drupal\Component\Utility\Random;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -10,6 +11,7 @@ use Drupal\Core\Http\RequestStack;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
+use Drupal\webform\Entity\Webform;
 use Drupal\webform\WebformEntityStorageInterface;
 use Drupal\webform\WebformInterface;
 
@@ -206,6 +208,28 @@ final class WebformHelper {
         ],
       ],
     ];
+  }
+
+  /**
+   * Get submission form render array from webform elements.
+   *
+   * @phpstan-param array<string, mixed> $elements
+   * @phpstan-return array<string, mixed>
+   */
+  public function getSubmissionForm(array $elements): array {
+    $webform = Webform::create([
+      'id' => (new Random())->name(32),
+      'elements' => Yaml::encode($elements),
+    ]);
+
+    // Hack: Needed to prevent an error in the webform module:
+    // Warning: array_intersect_key(): Expected parameter 2 to be an array, null
+    // given in Drupal\webform\Entity\Webform->invokeHandlers() ….
+    $prop = new \ReflectionProperty($webform, 'settingsOriginal');
+    $prop->setAccessible(TRUE);
+    $prop->setValue($webform, []);
+
+    return $webform->getSubmissionForm();
   }
 
 }

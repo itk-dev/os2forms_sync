@@ -9,6 +9,7 @@ os2forms_sync.admin.settings:
 os2forms_sync.webform.index:
   path: '/admin/os2forms/sync/webform'
   defaults:
+    _title: 'Import webforms'
     _controller: '\Drupal\os2forms_sync\Controller\WebformController::index'
   requirements:
     _permission: 'access webform overview'

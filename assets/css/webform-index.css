@@ -2,23 +2,17 @@
   width: 100%;
 }
 
-.os2forms-sync-webform-index .div + div {
-  margin-top: 1em;
+.os2forms-sync-webform-index .filters ul,
+.os2forms-sync-webform-index .filters li {
+  margin-left: 0;
+}
+
+.os2forms-sync-webform-index .filters li {
+  display: inline-block;
+  padding-right: 1em;
 }
 
 .os2forms-sync-webform-index .metadata {
   display: flex;
   justify-content: space-between;
-}
-
-.os2forms-sync-webform-index .metadata .category .label::after {
-  content: ': ';
-}
-
-.os2forms-sync-webform-index .metadata div + div {
-  margin-top: 0;
-}
-
-.os2forms-sync-webform-index .fieldset__wrapper {
-  margin-bottom: 0;
 }
