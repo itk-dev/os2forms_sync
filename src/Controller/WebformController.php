@@ -10,6 +10,7 @@ use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Url;
+use Drupal\os2forms_sync\Entity\AvailableWebform;
 use Drupal\os2forms_sync\Helper\ImportHelper;
 use Drupal\os2forms_sync\Helper\WebformHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -79,14 +80,14 @@ final class WebformController extends ControllerBase {
     // Filter available webforms.
     switch ($this->requestStack->getCurrentRequest()->get(self::FILTER_QUERY_NAME)) {
       case self::FILTER_WEBFORMS_IMPORTED:
-        $webforms = array_filter($webforms, static function (array $webform) use ($importedWebforms) {
-          return isset($importedWebforms[$webform['links']['self']]);
+        $webforms = array_filter($webforms, static function (AvailableWebform $webform) use ($importedWebforms) {
+          return isset($importedWebforms[$webform->sourceUrl]);
         });
         break;
 
       case self::FILTER_WEBFORMS_NOT_IMPORTED:
-        $webforms = array_filter($webforms, static function (array $webform) use ($importedWebforms) {
-          return !isset($importedWebforms[$webform['links']['self']]);
+        $webforms = array_filter($webforms, static function (AvailableWebform $webform) use ($importedWebforms) {
+          return !isset($importedWebforms[$webform->sourceUrl]);
         });
         break;
     }
@@ -137,12 +138,12 @@ final class WebformController extends ControllerBase {
     }
     else {
       foreach ($webforms as $webform) {
-        $attributes = $webform['attributes'];
+        $attributes = $webform->attributes;
         $form = $this->webformHelper->getSubmissionForm($attributes['elements']);
         // Make sure that the form cannot be submitted (hopefully).
         $form['#attributes']['onsubmit'] = 'return false';
 
-        $sourceUrl = $webform['links']['self'];
+        $sourceUrl = $webform->sourceUrl;
         $importedWebform = $importedWebforms[$sourceUrl] ?? NULL;
 
         $item = [

@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\os2forms_sync\Entity\AvailableWebform;
 use Drupal\os2forms_sync\Entity\ImportedWebform;
 use Drupal\webform\Entity\Webform;
 use Drupal\webform\WebformEntityStorageInterface;
@@ -314,7 +315,8 @@ final class ImportHelper {
   /**
    * Get available published webforms.
    *
-   * @phpstan-return array<mixed>
+   * @return \Drupal\os2forms_sync\Entity\AvailableWebform[]|array
+   *   The available webforms.
    */
   public function getAvailableWebforms(): array {
     $sources = array_unique($this->settings->getSources());
@@ -329,16 +331,22 @@ final class ImportHelper {
     );
 
     if ($ttl > 0 && $hit = $this->cache->get($cacheKey)) {
-      return $hit->data;
+      $webforms = $hit->data;
+    }
+    else {
+      $webforms = $this->fetchAvailableWebforms($sources);
+
+      if ($ttl > 0) {
+        $this->cache->set($cacheKey, $webforms, time() + $ttl);
+      }
     }
 
-    $webforms = $this->fetchAvailableWebforms($sources);
-
-    if ($ttl > 0) {
-      $this->cache->set($cacheKey, $webforms, time() + $ttl);
-    }
-
-    return $webforms;
+    return array_map(
+      static function ($webform) {
+        return new AvailableWebform($webform);
+      },
+      $webforms
+    );
   }
 
   /**
@@ -367,12 +375,10 @@ final class ImportHelper {
    * @param string $url
    *   The webform url.
    *
-   * @return array|null
+   * @return \Drupal\os2forms_sync\Entity\AvailableWebform|null
    *   The webform if any.
-   *
-   * @phpstan-return null|array<string, mixed>
    */
-  public function getAvailableWebform(string $url): ?array {
+  public function getAvailableWebform(string $url): ?AvailableWebform {
     $webforms = $this->getAvailableWebforms();
     foreach ($webforms as $webform) {
       if ($url === ($webform['links']['self'] ?? NULL)) {
