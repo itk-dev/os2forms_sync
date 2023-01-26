@@ -106,9 +106,8 @@ final class WebformHelper {
       '#type' => 'checkbox',
       '#title' => $this->t('Publish'),
       '#default_value' => (bool) ($defaultValues['publish'] ?? FALSE),
-      '#description' => $this->t('If checked this form will be listed on <a href=":url_index">:url_index</a> and details made available on <a href=":url_show">:url_show</a>', [
-        ':url_index' => Url::fromRoute('os2forms_sync.jsonapi.webform.index')->toString(),
-        ':url_show' => Url::fromRoute('os2forms_sync.jsonapi.webform.show', ['webform' => $webform->id()])->toString(),
+      '#description' => $this->t('If checked this form will be listed on <a href=":url_index">:url_index</a>. Share this url with others that may import all public webforms on this site.', [
+        ':url_index' => Url::fromRoute('os2forms_sync.jsonapi.webform.index')->setAbsolute()->toString(),
       ]),
     ];
 

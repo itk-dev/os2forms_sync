@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "id": "simpel_formular",
+      "type": "webform",
+      "attributes": {
+        "title": "Simpel formular",
+        "description": "Simpel formular der demonstrerer deling af formularer på tværs af OS2Forms-installationer.",
+        "category": "Test",
+        "elements": {
+          "name": {
+            "#type": "textfield",
+            "#title": "Name",
+            "#required": true
+          },
+          "birthday": {
+            "#type": "datelist",
+            "#title": "Birthday",
+            "#date_part_order": [
+              "year",
+              "month",
+              "day"
+            ],
+            "#required": true
+          },
+          "number": {
+            "#type": "number",
+            "#title": "Number",
+            "#min": 1,
+            "#max": 87
+          },
+          "er_du_tilfreds_": {
+            "#type": "checkbox",
+            "#title": "Er du tilfreds?"
+          }
+        }
+      },
+      "links": {
+        "self": "https://…/os2forms/sync/jsonapi/webform/simpel_formular"
+      }
+    },
+    {
+      "id": "example_form",
+      "type": "webform",
+      "attributes": {
+        "title": "Example form",
+        "description": "Example form.",
+        "category": "Example",
+        "elements": {
+          "name": {
+            "#type": "textfield",
+            "#title": "Name",
+            "#required": true
+          }
+        }
+      },
+      "links": {
+        "self": "https://…/os2forms/sync/jsonapi/webform/example_form"
+      }
+    }
+  ],
+  "links": {
+    "self": "https://…/os2forms/sync/jsonapi/webform"
+  }
+}

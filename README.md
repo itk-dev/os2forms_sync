@@ -11,7 +11,7 @@ Edit settings on `/admin/os2forms_sync/settings`.
 
 ## API
 
-JSON:API
+See [API](docs/API.md) for details on the API.
 
 ## Usage
 
@@ -21,9 +21,7 @@ settings » OS2Forms » OS2Forms sync
 All published webforms are listed on `/admin/os2forms/sync/webform` (API data on
 `/os2forms/sync/jsonapi/webform`).
 
-Webforms available for import are listed on `/os2forms/sync/jsonapi/webform/available`.
-
-Imported webforms are listed on `/os2forms/sync/jsonapi/webform/imported`.
+Webforms available for import are listed on `/admin/os2forms/sync/webform`.
 
 ## Drush commands
 

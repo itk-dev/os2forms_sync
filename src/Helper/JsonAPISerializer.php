@@ -78,7 +78,6 @@ final class JsonAPISerializer {
       $webform->toArray(),
       static function ($key) {
         return in_array($key, [
-          'uuid',
           'title',
           'description',
           'category',
