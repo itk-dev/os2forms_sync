@@ -146,16 +146,19 @@ final class WebformController extends ControllerBase {
         $sourceUrl = $webform->sourceUrl;
         $importedWebform = $importedWebforms[$sourceUrl] ?? NULL;
 
+        $title = $attributes['title'] ?? $webform->id;
         $item = [
           '#type' => 'fieldset',
-          '#title' => $attributes['title'] ?? 'xxx',
-          '#attributes' => ['class' => ['os2forms-sync-webform']],
+          '#title' => $title,
+          '#attributes' => [
+            'class' => ['os2forms-sync-webform'],
+          ],
 
           'description' => [
             '#type' => 'container',
             '#attributes' => [
               'class' => ['description'],
-              'data-indexed' => strip_tags($attributes['description']),
+              'data-indexed' => strip_tags($title . ' ' . $attributes['description']),
             ],
             '#markup' => Markup::create($attributes['description']),
           ],

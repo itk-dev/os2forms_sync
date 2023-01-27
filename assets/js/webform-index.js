@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const query = searchInput.value.toLowerCase()
     webforms.forEach(webform => {
       if (!webform.indexed) {
-        webform.indexed = index(webform).toLowerCase()
+        webform.indexed = [...webform.querySelectorAll('[data-indexed]')]
+          .map(e => e.dataset.indexed)
+          .join(' ')
+          .toLowerCase()
       }
       webform.hidden = !webform.indexed.includes(query)
     })
