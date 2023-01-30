@@ -1,0 +1,21 @@
+services:
+  Drupal\os2forms_sync\Helper\Settings:
+    arguments:
+      - '@state'
+
+  Drupal\os2forms_sync\Helper\WebformHelper:
+    arguments:
+      - '@entity_type.manager'
+      - '@Drupal\os2forms_sync\Helper\ImportHelper'
+      - '@request_stack'
+
+  Drupal\os2forms_sync\Helper\ImportHelper:
+    arguments:
+      - '@entity_type.manager'
+      - '@http_client'
+      - '@database'
+      - '@datetime.time'
+      - '@Drupal\os2forms_sync\Helper\Settings'
+      - '@cache.default'
+
+  Drupal\os2forms_sync\Helper\JsonAPISerializer:

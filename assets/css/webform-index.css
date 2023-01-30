@@ -1,0 +1,22 @@
+.os2forms-sync-webform-index [type="search"] {
+  width: 100%;
+}
+
+.os2forms-sync-webform-index .filters ul,
+.os2forms-sync-webform-index .filters li {
+  margin-left: 0;
+}
+
+.os2forms-sync-webform-index .filters li {
+  display: inline-block;
+  padding-right: 1em;
+}
+
+.os2forms-sync-webform-index .metadata {
+  display: flex;
+  justify-content: space-between;
+}
+
+.os2forms-sync-webform-index .settings {
+  margin-top: 2em;
+}

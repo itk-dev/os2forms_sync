@@ -1,0 +1,6 @@
+services:
+  Drupal\os2forms_sync\Commands\ImportCommands:
+    arguments:
+      - '@Drupal\os2forms_sync\Helper\ImportHelper'
+    tags:
+      - { name: drush.command }

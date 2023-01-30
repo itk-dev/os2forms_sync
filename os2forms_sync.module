@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Module file form os2forms_sync.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\os2forms_sync\Helper\ImportHelper;
+use Drupal\os2forms_sync\Helper\WebformHelper;
+use Drupal\webform\WebformInterface;
+
+/**
+ * Implements hook_webform_third_party_settings_form_alter().
+ *
+ * @see WebformHelper::webformThirdPartySettingsFormAlter()
+ *
+ * @phpstan-param array<string, mixed> $form
+ */
+function os2forms_sync_webform_third_party_settings_form_alter(array &$form, FormStateInterface $form_state): void {
+  \Drupal::service(WebformHelper::class)->webformThirdPartySettingsFormAlter($form, $form_state);
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * @see WebformHelper::theme()
+ *
+ * @phpstan-param array<string, mixed> $existing
+ * @phpstan-return array<string, mixed>
+ */
+function os2forms_sync_theme(array $existing, string $type, string $theme, string $path): array {
+  return \Drupal::service(WebformHelper::class)->theme($existing, $type, $theme, $path);
+}
+
+/**
+ * Implements hook_webform_delete().
+ *
+ * @see ImportHelper::deleteWebform()
+ */
+function os2forms_sync_webform_delete(WebformInterface $webform): void {
+  \Drupal::service(ImportHelper::class)->deleteWebform($webform);
+}
