@@ -1,7 +1,7 @@
 services:
   Drupal\os2forms_sync\Helper\Settings:
     arguments:
-      - '@state'
+      - '@keyvalue'
 
   Drupal\os2forms_sync\Helper\WebformHelper:
     arguments:

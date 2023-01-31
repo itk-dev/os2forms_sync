@@ -12,5 +12,6 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Added OS2Forms sync module
+- Used keyvalue for settings storage
 
 [Unreleased]: https://github.com/itk-dev/os2forms_sync/compare/main...HEAD

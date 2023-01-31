@@ -2,7 +2,8 @@
 
 namespace Drupal\os2forms_sync\Helper;
 
-use Drupal\Core\State\StateInterface;
+use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
+use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Drupal\os2forms_sync\Exception\InvalidSettingException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -11,24 +12,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class Settings {
   /**
-   * The state.
+   * The store.
    *
-   * @var \Drupal\Core\State\StateInterface
+   * @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface
    */
-  private StateInterface $state;
+  private KeyValueStoreInterface $store;
 
   /**
-   * The key prefix.
+   * The key value collection name.
    *
    * @var string
    */
-  private $stateKey = 'os2forms_sync';
+  private $collection = 'os2forms_sync';
 
   /**
    * Constructor.
    */
-  public function __construct(StateInterface $state) {
-    $this->state = $state;
+  public function __construct(KeyValueFactoryInterface $keyValueFactory) {
+    $this->store = $keyValueFactory->get($this->collection);
   }
 
   /**
@@ -70,12 +71,11 @@ final class Settings {
       throw new InvalidSettingException(sprintf('Setting %s is not defined', $key));
     }
 
-    $settings = $this->state->get($this->stateKey);
-    return $settings[$key] ?? $default;
+    return $this->store->get($key, $default);
   }
 
   /**
-   * Set setting.
+   * Set settings.
    *
    * @throws \Symfony\Component\OptionsResolver\Exception\ExceptionInterface
    *
@@ -83,7 +83,9 @@ final class Settings {
    */
   public function setSettings(array $settings): self {
     $settings = $this->getSettingsResolver()->resolve($settings);
-    $this->state->set($this->stateKey, $settings);
+    foreach ($settings as $key => $value) {
+      $this->store->set($key, $value);
+    }
 
     return $this;
   }
