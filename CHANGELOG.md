@@ -9,9 +9,18 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.0]
+
+### Added
+
+- Used keyvalue for settings storage
+
+## [1.0.0]
+
 ### Added
 
 - Added OS2Forms sync module
-- Used keyvalue for settings storage
 
-[Unreleased]: https://github.com/itk-dev/os2forms_sync/compare/main...HEAD
+[Unreleased]: https://github.com/itk-dev/os2forms_sync/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/itk-dev/os2forms_sync/compare/1.0.0...1.1.0
+[1.0.0]: https://github.com/itk-dev/os2forms_sync/releases/tag/1.0.0
