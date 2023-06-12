@@ -139,7 +139,19 @@ final class WebformController extends ControllerBase {
     else {
       foreach ($webforms as $webform) {
         $attributes = $webform->attributes;
-        $form = $this->webformHelper->getSubmissionForm($attributes['elements']);
+        try {
+          $form = $this->webformHelper->getSubmissionForm($attributes['elements']);
+        }
+        catch (\Throwable $t) {
+          $form = [
+            '#theme' => 'status_messages',
+            '#message_list' => [
+              'error' => [
+                $this->t('Cannot render form: @message', ['@message' => $t->getMessage()]),
+              ],
+            ],
+          ];
+        }
         // Make sure that the form cannot be submitted (hopefully).
         $form['#attributes']['onsubmit'] = 'return false';
 
