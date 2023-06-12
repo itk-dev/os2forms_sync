@@ -9,6 +9,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Handled errors in form preview
+
 ## [1.1.0]
 
 ### Added
