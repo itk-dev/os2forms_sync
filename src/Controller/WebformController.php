@@ -7,6 +7,7 @@ use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Http\RequestStack;
 use Drupal\Core\Link;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Url;
@@ -25,33 +26,14 @@ final class WebformController extends ControllerBase {
   private const FILTER_WEBFORMS_NOT_IMPORTED = 'not imported';
 
   /**
-   * The request stack.
-   *
-   * @var \Drupal\Core\Http\RequestStack
-   */
-  private RequestStack $requestStack;
-
-  /**
-   * The import helper.
-   *
-   * @var \Drupal\os2forms_sync\Helper\ImportHelper
-   */
-  private ImportHelper $importHelper;
-
-  /**
-   * The webform helper.
-   *
-   * @var \Drupal\os2forms_sync\Helper\WebformHelper
-   */
-  private WebformHelper $webformHelper;
-
-  /**
    * Constructor.
    */
-  public function __construct(RequestStack $requestStack, ImportHelper $importHelper, WebformHelper $webformHelper) {
-    $this->requestStack = $requestStack;
-    $this->importHelper = $importHelper;
-    $this->webformHelper = $webformHelper;
+  public function __construct(
+    readonly private RequestStack $requestStack,
+    readonly private ImportHelper $importHelper,
+    readonly private WebformHelper $webformHelper,
+    readonly private RendererInterface $renderer
+  ) {
   }
 
   /**
@@ -61,7 +43,8 @@ final class WebformController extends ControllerBase {
     return new static(
       $container->get('request_stack'),
       $container->get(ImportHelper::class),
-      $container->get(WebformHelper::class)
+      $container->get(WebformHelper::class),
+      $container->get('renderer')
     );
   }
 
@@ -141,6 +124,9 @@ final class WebformController extends ControllerBase {
         $attributes = $webform->attributes;
         try {
           $form = $this->webformHelper->getSubmissionForm($attributes['elements']);
+          // Make sure that the form cannot be submitted (hopefully).
+          $form['#attributes']['onsubmit'] = 'return false';
+          $renderedForm = $this->renderer->renderPlain($form);
         }
         catch (\Throwable $t) {
           $form = [
@@ -151,9 +137,8 @@ final class WebformController extends ControllerBase {
               ],
             ],
           ];
+          $renderedForm = $this->renderer->renderPlain($form);
         }
-        // Make sure that the form cannot be submitted (hopefully).
-        $form['#attributes']['onsubmit'] = 'return false';
 
         $sourceUrl = $webform->sourceUrl;
         $importedWebform = $importedWebforms[$sourceUrl] ?? NULL;
@@ -178,7 +163,9 @@ final class WebformController extends ControllerBase {
           'form_display' => [
             '#type' => 'details',
             '#title' => $this->t('Form display'),
-            'form' => $form,
+            'form' => [
+              '#markup' => $renderedForm,
+            ],
           ],
 
           'elements' => [
