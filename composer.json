@@ -19,7 +19,7 @@
     ],
     "require": {
         "drupal/webform": "^6",
-        "drush/drush": "^10 || ^11",
+        "drush/drush": "^11 || ^12",
         "symfony/options-resolver": "^5.4 || ^6.0"
     },
     "require-dev": {
