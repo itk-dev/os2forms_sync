@@ -9,6 +9,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Updated
+
+- Updated `drush/drush` requirement
+
 ## [1.1.2]
 
 ### Fixed
