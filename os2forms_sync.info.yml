@@ -3,7 +3,7 @@ description: OS2Forms sync
 package: OS2Forms
 
 type: module
-core_version_requirement: ^9
+core_version_requirement: ^9 || ^10
 
 dependencies:
   - drupal:os2forms
