@@ -6,13 +6,13 @@ use Drupal\Component\Utility\Random;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Http\RequestStack;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\webform\Entity\Webform;
 use Drupal\webform\WebformEntityStorageInterface;
 use Drupal\webform\WebformInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * The webform helper.
@@ -37,7 +37,7 @@ final class WebformHelper {
   /**
    * The request stack.
    *
-   * @var \Drupal\Core\Http\RequestStack
+   * @var Symfony\Component\HttpFoundation\RequestStack
    */
   private RequestStack $requestStack;
 
