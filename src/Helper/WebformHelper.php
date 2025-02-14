@@ -37,7 +37,7 @@ final class WebformHelper {
   /**
    * The request stack.
    *
-   * @var Symfony\Component\HttpFoundation\RequestStack
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   private RequestStack $requestStack;
 
@@ -47,7 +47,7 @@ final class WebformHelper {
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
     ImportHelper $importHelper,
-    RequestStack $requestStack
+    RequestStack $requestStack,
   ) {
     $this->webformEntityStorage = $entityTypeManager->getStorage('webform');
     $this->importHelper = $importHelper;

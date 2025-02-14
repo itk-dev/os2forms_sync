@@ -32,7 +32,7 @@ final class WebformController extends ControllerBase {
     readonly private RequestStack $requestStack,
     readonly private ImportHelper $importHelper,
     readonly private WebformHelper $webformHelper,
-    readonly private RendererInterface $renderer
+    readonly private RendererInterface $renderer,
   ) {
   }
 
