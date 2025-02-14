@@ -37,7 +37,7 @@ final class WebformHelper {
   /**
    * The request stack.
    *
-   * @var Symfony\Component\HttpFoundation\RequestStack
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   private RequestStack $requestStack;
 
