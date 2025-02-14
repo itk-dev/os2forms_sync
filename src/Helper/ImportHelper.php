@@ -75,7 +75,7 @@ final class ImportHelper {
     Connection $database,
     TimeInterface $time,
     Settings $settings,
-    CacheBackendInterface $cache
+    CacheBackendInterface $cache,
   ) {
     $this->webformEntityStorage = $entityTypeManager->getStorage('webform');
     $this->client = $client;

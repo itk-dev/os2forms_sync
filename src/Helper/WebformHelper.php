@@ -47,7 +47,7 @@ final class WebformHelper {
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
     ImportHelper $importHelper,
-    RequestStack $requestStack
+    RequestStack $requestStack,
   ) {
     $this->webformEntityStorage = $entityTypeManager->getStorage('webform');
     $this->importHelper = $importHelper;
